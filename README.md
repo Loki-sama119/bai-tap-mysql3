@@ -1,35 +1,38 @@
-# Bài thực hành: Truy vấn dữ liệu MySQL – QuanLySinhVien
+# FlashMart – Sửa lỗi JOIN trong báo cáo Marketing và Kho vận
 
-## Mục tiêu
-Sử dụng câu lệnh `SELECT`, `WHERE` và `JOIN` để truy vấn dữ liệu từ cơ sở dữ liệu `QuanLySinhVien` đã tạo ở bài trước.
+Bài thực hành MySQL về `INNER JOIN`, `LEFT JOIN`, anti-join và `COUNT`.
 
-## Tệp bài làm
-- [`QuanLySinhVien_Select.sql`](QuanLySinhVien_Select.sql): gồm đầy đủ **5 câu truy vấn** theo đề bài.
+## File nộp chính
+- [`flashmart_reports.sql`](flashmart_reports.sql): tạo database/bảng, nhập dữ liệu, chạy 2 báo cáo và thống kê đối chiếu.
+- [`join_analysis.md`](join_analysis.md): giải thích vì sao cần `COUNT(o.order_id)` thay `COUNT(*)` (dưới 150 từ).
+- [`ai_prompt_log.md`](ai_prompt_log.md): các câu hỏi và trả lời kỹ thuật liên quan JOIN (AI hỗ trợ tham khảo).
 
-## Nội dung 5 truy vấn
-1. Hiển thị tất cả học viên từ bảng `Student`.
-2. Hiển thị học viên đang theo học (`Status = TRUE`).
-3. Hiển thị môn học có `Credit < 10`.
-4. Hiển thị học viên lớp `A1` bằng `JOIN Student` với `Class`.
-5. Hiển thị điểm môn `CF` bằng `JOIN Student`, `Mark`, `Subject`.
+## Cách chạy
+1. Mở MySQL Workbench, kết nối MySQL Server.
+2. Mở `flashmart_reports.sql` và chạy toàn bộ script (Execute All).
+3. Xem ba Result Grid và đối chiếu với kết quả dự kiến bên dưới.
+4. Chụp ảnh màn hình **thật** của hai báo cáo nếu cần minh chứng. Không dùng ảnh mô phỏng AI làm bằng chứng thực thi.
 
-> **Chú ý:** Đề bài gọi `Credit` là “thời gian học”, nhưng trong cấu trúc bảng cũ đây là trường `Credit` (số tín chỉ). Bài làm giữ nguyên điều kiện `Credit < 10` như đề hướng dẫn.
+> **Cảnh báo:** Script xóa và tạo lại ba bảng demo `Orders`, `Products`, `Customers` thuộc database `flashmart_db`. Chỉ chạy trong môi trường thực hành.
 
-## Hướng dẫn chạy trên MySQL Workbench
-1. Mở MySQL Workbench và kết nối đến MySQL Server.
-2. Bảo đảm có cơ sở dữ liệu `QuanLySinhVien`, đủ các bảng `Student`, `Class`, `Subject`, `Mark` và dữ liệu đã nhập ở bài thực hành trước.
-3. Mở file `QuanLySinhVien_Select.sql` bằng **File → Open SQL Script**.
-4. Chạy các câu lệnh bằng nút tia sét. Có thể chọn từng câu để xem kết quả riêng trong **Result Grid**.
-5. Chụp ảnh **Result Grid thực tế** của từng truy vấn (nếu giảng viên yêu cầu minh chứng).
+## Kết quả dự kiến
 
-## Kết quả dự kiến với dữ liệu mẫu từ bài trước
-- Câu 1: `Hung`, `Hoa`, `Manh`.
-- Câu 2: `Hung`, `Hoa`.
-- Câu 3: `CF`, `C`, `HDJ`.
-- Câu 4: `Hung`, `Hoa` thuộc lớp `A1`.
-- Câu 5: `Hung` điểm `8`, `Hoa` điểm `10` môn `CF`.
+**Báo cáo Marketing**:
 
-Các kết quả trên chỉ đúng khi dữ liệu hiện tại khớp đúng bài INSERT trước đó; đây **không phải kết quả đã chạy kiểm thử**.
+| customer_id | name | total_orders |
+|---|---|---|
+| 1 | Alice | 2 |
+| 2 | Bob | 1 |
+| 3 | Charlie | 0 |
 
-## Nộp bài lên GitHub
-Tạo repository riêng (ví dụ `QuanLySinhVien-Select`) và tải file `.sql`, `README.md` lên, sau đó nộp URL repository trên CodeGym. Không nên dùng lại repository của bài tập khác.
+**Báo cáo Kho vận**:
+
+| product_id | product_name |
+|---|---|
+| 103 | Keyboard |
+
+## Giải thích ngắn
+`INNER JOIN` chỉ giữ bản ghi khớp nên bỏ mất Charlie và Keyboard. `LEFT JOIN` giữ các dòng của bảng bên trái; `WHERE o.order_id IS NULL` tìm được sản phẩm chưa có đơn hàng.
+
+## Trạng thái xác minh
+Mã nguồn được kiểm tra nội dung và cấu trúc gói file. **Chưa chạy thực tế trên MySQL Server** trong môi trường này; các bảng kết quả ở trên là kết quả suy ra từ dữ liệu mẫu, không phải ảnh thực thi.

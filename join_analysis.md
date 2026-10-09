@@ -1,0 +1,3 @@
+# Phân tích lựa chọn JOIN và COUNT (dưới 150 từ)
+
+Báo cáo Marketing phải giữ **mọi khách hàng**, kể cả người chưa mua, nên chọn `Customers LEFT JOIN Orders`. Với khách chưa có đơn, MySQL vẫn tạo một dòng kết quả nhưng các cột từ `Orders` là `NULL`. Vì vậy `COUNT(*)` sẽ đếm cả dòng này và trả về **1**, gây sai số. Ngược lại, `COUNT(o.order_id)` chỉ đếm giá trị **không NULL** ở khóa chính đơn hàng, nên Charlie có **0 đơn**. Báo cáo kho vận cũng dùng `Products LEFT JOIN Orders`, sau đó lọc `WHERE o.order_id IS NULL` để tìm hàng chưa từng bán. `INNER JOIN` không thể tìm thấy những dòng không có bản ghi khớp. Hai truy vấn lần lượt phải trả về **3 khách hàng** và **1 sản phẩm Keyboard**.
