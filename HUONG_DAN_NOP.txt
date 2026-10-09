@@ -1,6 +1,7 @@
-1. Giai nen QuanLySinhVien_Select_GitHub.zip.
-2. Mo QuanLySinhVien_Select.sql trong MySQL Workbench, chay 5 truy van.
-3. Kiem tra ket qua Result Grid va chup anh neu can.
-4. Tao repo GitHub PUBLIC: QuanLySinhVien-Select.
-5. Upload cac file .sql, README.md, HUONG_DAN_NOP.txt (khong chi upload ZIP).
-6. Dan URL repo vao CodeGym.
+1. Giai nen ZIP.
+2. Mo QuanLySinhVien_TruyVanNangCao.sql trong MySQL Workbench.
+3. Dam bao CSDL QuanLySinhVien va du lieu cac bang da ton tai.
+4. Chay cac truy van, kiem tra UPDATE truoc khi chay.
+5. Tao GitHub repository moi (vi du: QuanLySinhVien-TruyVanNangCao).
+6. Upload cac tep SQL, README.md, HUONG_DAN_NOP.txt va anh chup ket qua that neu co.
+7. Sao chep duong dan repository va nop CodeGym.

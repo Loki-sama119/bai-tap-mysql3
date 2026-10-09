@@ -1,38 +1,29 @@
-# FlashMart – Sửa lỗi JOIN trong báo cáo Marketing và Kho vận
+# Bài tập: Truy vấn dữ liệu với CSDL Quản lý sinh viên
 
-Bài thực hành MySQL về `INNER JOIN`, `LEFT JOIN`, anti-join và `COUNT`.
+## Mục tiêu
+Thực hành các câu lệnh `SELECT`, `WHERE`, `LIKE`, `MONTH`, `BETWEEN`, `UPDATE`, `JOIN` và `ORDER BY` trong MySQL.
 
-## File nộp chính
-- [`flashmart_reports.sql`](flashmart_reports.sql): tạo database/bảng, nhập dữ liệu, chạy 2 báo cáo và thống kê đối chiếu.
-- [`join_analysis.md`](join_analysis.md): giải thích vì sao cần `COUNT(o.order_id)` thay `COUNT(*)` (dưới 150 từ).
-- [`ai_prompt_log.md`](ai_prompt_log.md): các câu hỏi và trả lời kỹ thuật liên quan JOIN (AI hỗ trợ tham khảo).
+## Tệp bài làm
+- `QuanLySinhVien_TruyVanNangCao.sql` — đủ 5 yêu cầu trong đề; câu 4 có lệnh kiểm tra dữ liệu sau cập nhật.
 
-## Cách chạy
-1. Mở MySQL Workbench, kết nối MySQL Server.
-2. Mở `flashmart_reports.sql` và chạy toàn bộ script (Execute All).
-3. Xem ba Result Grid và đối chiếu với kết quả dự kiến bên dưới.
-4. Chụp ảnh màn hình **thật** của hai báo cáo nếu cần minh chứng. Không dùng ảnh mô phỏng AI làm bằng chứng thực thi.
+## Yêu cầu trước khi chạy
+Đã có CSDL `QuanLySinhVien` và bốn bảng `Class`, `Student`, `Subject`, `Mark`, cùng dữ liệu từ bài thực hành trước. Tệp này **không tạo lại** cơ sở dữ liệu và bảng.
 
-> **Cảnh báo:** Script xóa và tạo lại ba bảng demo `Orders`, `Products`, `Customers` thuộc database `flashmart_db`. Chỉ chạy trong môi trường thực hành.
+## Năm yêu cầu
+1. Sinh viên có tên bắt đầu bằng chữ `h`: `LIKE 'h%'` (không phân biệt chữ hoa/thường với collation MySQL thông dụng dạng `_ci`).
+2. Lớp học bắt đầu tháng 12: `MONTH(StartDate) = 12`.
+3. Môn học có tín chỉ trong đoạn `[3, 5]`: `Credit BETWEEN 3 AND 5`.
+4. Chuyển sinh viên tên `Hung` sang lớp có `ClassID = 2`: `UPDATE` (thay đổi dữ liệu thực).
+5. Hiển thị `StudentName`, `SubName`, `Mark` và sắp xếp `Mark DESC, StudentName ASC`.
 
-## Kết quả dự kiến
+## Cách chạy trên MySQL Workbench
+1. Mở tệp `.sql` và chọn kết nối MySQL.
+2. Chạy câu `USE` và các câu `SELECT` để kiểm tra trước.
+3. **Chỉ khi muốn đổi lớp cho Hung**, chạy riêng câu `UPDATE Student ... WHERE StudentName = 'Hung'` rồi chạy câu `SELECT` kiểm tra.
+4. Chụp Result Grid của các truy vấn đã thực thi. Đây là ảnh minh chứng thật; không thay bằng ảnh mô phỏng.
+5. Tải hai tệp lên một repository GitHub công khai; có thể thêm ảnh chụp thật trong thư mục `images/`. Nộp đường dẫn repository theo yêu cầu CodeGym.
 
-**Báo cáo Marketing**:
-
-| customer_id | name | total_orders |
-|---|---|---|
-| 1 | Alice | 2 |
-| 2 | Bob | 1 |
-| 3 | Charlie | 0 |
-
-**Báo cáo Kho vận**:
-
-| product_id | product_name |
-|---|---|
-| 103 | Keyboard |
-
-## Giải thích ngắn
-`INNER JOIN` chỉ giữ bản ghi khớp nên bỏ mất Charlie và Keyboard. `LEFT JOIN` giữ các dòng của bảng bên trái; `WHERE o.order_id IS NULL` tìm được sản phẩm chưa có đơn hàng.
-
-## Trạng thái xác minh
-Mã nguồn được kiểm tra nội dung và cấu trúc gói file. **Chưa chạy thực tế trên MySQL Server** trong môi trường này; các bảng kết quả ở trên là kết quả suy ra từ dữ liệu mẫu, không phải ảnh thực thi.
+## Lưu ý
+- `LIKE 'h%'` thường khớp cả `Hung` trên CSDL có collation không phân biệt hoa thường. Nếu collation phân biệt hoa thường và đề muốn cả hai, có thể dùng `LOWER(StudentName) LIKE 'h%'`.
+- Lệnh `UPDATE` cập nhật tất cả sinh viên có cùng tên `Hung`. Nếu yêu cầu cập nhật duy nhất một sinh viên, nên dùng `StudentID` để xác định bản ghi.
+- Nếu chưa có dữ liệu, các truy vấn có thể trả về bảng rỗng.
