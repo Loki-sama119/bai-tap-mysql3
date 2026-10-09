@@ -1,21 +1,40 @@
-# AutoRide — Nâng cấp CSDL thuê/trả xe (MySQL)
+# Thực hành: Thêm dữ liệu vào CSDL QuanLySinhVien
 
 ## Mục tiêu
-Phân tích khoảng trống giữa quy trình nghiệp vụ và mô hình dữ liệu, nâng cấp `Rentals` bằng `ALTER TABLE`, bổ sung `Inspections`, kiểm soát trạng thái và mô phỏng số tiền hoàn lại.
+Sử dụng `INSERT INTO` để thêm dữ liệu vào bốn bảng đã được tạo trong bài thực hành trước: `Class`, `Student`, `Subject`, `Mark`.
 
-## File
-- `autoride_db.sql`: tạo schema mẫu legacy, nâng cấp bằng ALTER, tạo bảng Inspections, trigger, dữ liệu INSERT/UPDATE, SELECT kết quả.
-- `er_activity_mapping.md`: báo cáo ba khoảng trống dữ liệu (dưới 200 từ).
-- `ai_prompt_log.md`: nhật ký hỗ trợ AI và phần cần kiểm chứng.
-- `images/AutoRide_ERD.png`: sơ đồ quan hệ thiết kế.
+## Cấu trúc bài nộp
+- `QuanLySinhVien_Insert.sql`: thêm đầy đủ dữ liệu trong đề và truy vấn `SELECT` kiểm tra.
+- `README.md`: hướng dẫn thực hành và nộp bài.
 
-## Hướng dẫn chạy
-1. Mở MySQL Workbench kết nối MySQL 8.0+.
-2. Mở `autoride_db.sql`, chạy **một lần** từ đầu đến cuối trên môi trường thử nghiệm. Script tạo database `autoride_db` nếu chưa có.
-3. Xem kết quả SELECT cuối script: Nguyễn Văn A hoàn 8.000.000đ; Trần Văn C hoàn 7.000.000đ (giả định phí trễ 1.000.000đ).
-4. Chụp ảnh **thực tế** sơ đồ bảng, phần SELECT và kết quả `SHOW CREATE TABLE` nếu cần minh chứng.
+## Chuẩn bị
+Bài này **dùng lại cơ sở dữ liệu `QuanLySinhVien` đã tạo ở bài trước**. Cần có sẵn các bảng và khóa ngoại:
+- `Class(ClassID)`
+- `Student(StudentID, ClassID)` với `ClassID` tham chiếu `Class`
+- `Subject(SubID)`
+- `Mark(MarkID, SubID, StudentID)` với `SubID` tham chiếu `Subject`, `StudentID` tham chiếu `Student`.
 
-**Lưu ý:** Script được thiết kế cho database mới/chưa được nâng cấp. Không chạy lặp lại trên bảng Rentals đã có các cột mới vì ALTER sẽ báo cột trùng. Nếu có dữ liệu legacy thực, sao lưu trước và kiểm tra các giá trị `status` trước khi MODIFY ENUM. Chưa xác nhận chạy thực tế trên MySQL Server của người nộp.
+## Thực hiện trên MySQL Workbench
+1. Kết nối MySQL Server, kiểm tra database `QuanLySinhVien` và 4 bảng có sẵn.
+2. Mở file `QuanLySinhVien_Insert.sql`.
+3. Chạy toàn bộ script **một lần**. Các câu lệnh `SELECT` ở cuối cho phép kiểm tra dữ liệu.
+4. Chụp ảnh màn hình nội dung SQL và kết quả `SELECT` của 4 bảng.
+5. Đưa ảnh chụp **thực tế** vào thư mục `images/` (tạo thư mục nếu cần), sau đó upload bài lên GitHub và nộp link repository.
 
-## Tóm tắt quan hệ
-`Cars (1) — (N) Rentals (1) — (N) Inspections`.
+## Dữ liệu mong đợi
+| Bảng | Số bản ghi chèn |
+| --- | ---: |
+| Class | 3 |
+| Student | 3 |
+| Subject | 4 |
+| Mark | 3 |
+
+Lưu ý:
+- Học viên Hoa không có số điện thoại: nhập `NULL`.
+- `Class.StartDate` của B3 dùng `CURRENT_DATE()` theo đề, ngày cụ thể phụ thuộc ngày chạy SQL.
+- Trong bảng `Mark`, đề yêu cầu điểm `12`; giữ nguyên. Nếu muốn giới hạn thang điểm 0–10, cần xác nhận lại với giảng viên trước khi sửa dữ liệu hoặc ràng buộc.
+- Vì các mã khóa chính 1, 2, 3... được sử dụng, chạy script lặp lại trên cùng dữ liệu có thể báo trùng khóa; **không xóa dữ liệu cũ khi chưa sao lưu**.
+- Nếu bảng `Student` đã có dữ liệu khiến AUTO_INCREMENT không bắt đầu từ 1, cần kiểm tra lại ID trước khi chèn `Mark`.
+
+## Trình tự nộp GitHub
+Giải nén rồi upload hai file `README.md` và `QuanLySinhVien_Insert.sql` vào một repository riêng, ví dụ `QuanLySinhVien-Insert`, không đưa nhầm file bài khác vào cùng repo. Đường dẫn nộp là link repository GitHub, không phải file ZIP hoặc chỉ bản ghi âm.

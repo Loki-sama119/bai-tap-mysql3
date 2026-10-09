@@ -1,6 +1,6 @@
 1. Giai nen ZIP.
-2. Mo QuanLyDiemThi.sql trong MySQL Workbench va chay.
-3. Chup anh ket qua that theo README, cho vao thu muc images.
-4. Trong README, xoa <!-- va --> o ba dong anh (neu da co anh).
-5. Tao repository GitHub Public; tai noi dung da giai nen (khong chi tai ZIP).
-6. Kiem tra README va file SQL hien thi cong khai, sau do nop link repository cho CodeGym.
+2. Mo QuanLySinhVien_Insert.sql trong MySQL Workbench.
+3. Kiem tra da co schema QuanLySinhVien va 4 bang tu bai truoc.
+4. Chay SQL mot lan; chup anh ket qua SELECT thuc te.
+5. Upload file .sql, README.md, anh chup (neu co) len repo GitHub rieng.
+6. Nop LINK REPOSITORY GitHub tren CodeGym.
