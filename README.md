@@ -1,40 +1,35 @@
-# Thực hành: Thêm dữ liệu vào CSDL QuanLySinhVien
+# Bài thực hành: Truy vấn dữ liệu MySQL – QuanLySinhVien
 
 ## Mục tiêu
-Sử dụng `INSERT INTO` để thêm dữ liệu vào bốn bảng đã được tạo trong bài thực hành trước: `Class`, `Student`, `Subject`, `Mark`.
+Sử dụng câu lệnh `SELECT`, `WHERE` và `JOIN` để truy vấn dữ liệu từ cơ sở dữ liệu `QuanLySinhVien` đã tạo ở bài trước.
 
-## Cấu trúc bài nộp
-- `QuanLySinhVien_Insert.sql`: thêm đầy đủ dữ liệu trong đề và truy vấn `SELECT` kiểm tra.
-- `README.md`: hướng dẫn thực hành và nộp bài.
+## Tệp bài làm
+- [`QuanLySinhVien_Select.sql`](QuanLySinhVien_Select.sql): gồm đầy đủ **5 câu truy vấn** theo đề bài.
 
-## Chuẩn bị
-Bài này **dùng lại cơ sở dữ liệu `QuanLySinhVien` đã tạo ở bài trước**. Cần có sẵn các bảng và khóa ngoại:
-- `Class(ClassID)`
-- `Student(StudentID, ClassID)` với `ClassID` tham chiếu `Class`
-- `Subject(SubID)`
-- `Mark(MarkID, SubID, StudentID)` với `SubID` tham chiếu `Subject`, `StudentID` tham chiếu `Student`.
+## Nội dung 5 truy vấn
+1. Hiển thị tất cả học viên từ bảng `Student`.
+2. Hiển thị học viên đang theo học (`Status = TRUE`).
+3. Hiển thị môn học có `Credit < 10`.
+4. Hiển thị học viên lớp `A1` bằng `JOIN Student` với `Class`.
+5. Hiển thị điểm môn `CF` bằng `JOIN Student`, `Mark`, `Subject`.
 
-## Thực hiện trên MySQL Workbench
-1. Kết nối MySQL Server, kiểm tra database `QuanLySinhVien` và 4 bảng có sẵn.
-2. Mở file `QuanLySinhVien_Insert.sql`.
-3. Chạy toàn bộ script **một lần**. Các câu lệnh `SELECT` ở cuối cho phép kiểm tra dữ liệu.
-4. Chụp ảnh màn hình nội dung SQL và kết quả `SELECT` của 4 bảng.
-5. Đưa ảnh chụp **thực tế** vào thư mục `images/` (tạo thư mục nếu cần), sau đó upload bài lên GitHub và nộp link repository.
+> **Chú ý:** Đề bài gọi `Credit` là “thời gian học”, nhưng trong cấu trúc bảng cũ đây là trường `Credit` (số tín chỉ). Bài làm giữ nguyên điều kiện `Credit < 10` như đề hướng dẫn.
 
-## Dữ liệu mong đợi
-| Bảng | Số bản ghi chèn |
-| --- | ---: |
-| Class | 3 |
-| Student | 3 |
-| Subject | 4 |
-| Mark | 3 |
+## Hướng dẫn chạy trên MySQL Workbench
+1. Mở MySQL Workbench và kết nối đến MySQL Server.
+2. Bảo đảm có cơ sở dữ liệu `QuanLySinhVien`, đủ các bảng `Student`, `Class`, `Subject`, `Mark` và dữ liệu đã nhập ở bài thực hành trước.
+3. Mở file `QuanLySinhVien_Select.sql` bằng **File → Open SQL Script**.
+4. Chạy các câu lệnh bằng nút tia sét. Có thể chọn từng câu để xem kết quả riêng trong **Result Grid**.
+5. Chụp ảnh **Result Grid thực tế** của từng truy vấn (nếu giảng viên yêu cầu minh chứng).
 
-Lưu ý:
-- Học viên Hoa không có số điện thoại: nhập `NULL`.
-- `Class.StartDate` của B3 dùng `CURRENT_DATE()` theo đề, ngày cụ thể phụ thuộc ngày chạy SQL.
-- Trong bảng `Mark`, đề yêu cầu điểm `12`; giữ nguyên. Nếu muốn giới hạn thang điểm 0–10, cần xác nhận lại với giảng viên trước khi sửa dữ liệu hoặc ràng buộc.
-- Vì các mã khóa chính 1, 2, 3... được sử dụng, chạy script lặp lại trên cùng dữ liệu có thể báo trùng khóa; **không xóa dữ liệu cũ khi chưa sao lưu**.
-- Nếu bảng `Student` đã có dữ liệu khiến AUTO_INCREMENT không bắt đầu từ 1, cần kiểm tra lại ID trước khi chèn `Mark`.
+## Kết quả dự kiến với dữ liệu mẫu từ bài trước
+- Câu 1: `Hung`, `Hoa`, `Manh`.
+- Câu 2: `Hung`, `Hoa`.
+- Câu 3: `CF`, `C`, `HDJ`.
+- Câu 4: `Hung`, `Hoa` thuộc lớp `A1`.
+- Câu 5: `Hung` điểm `8`, `Hoa` điểm `10` môn `CF`.
 
-## Trình tự nộp GitHub
-Giải nén rồi upload hai file `README.md` và `QuanLySinhVien_Insert.sql` vào một repository riêng, ví dụ `QuanLySinhVien-Insert`, không đưa nhầm file bài khác vào cùng repo. Đường dẫn nộp là link repository GitHub, không phải file ZIP hoặc chỉ bản ghi âm.
+Các kết quả trên chỉ đúng khi dữ liệu hiện tại khớp đúng bài INSERT trước đó; đây **không phải kết quả đã chạy kiểm thử**.
+
+## Nộp bài lên GitHub
+Tạo repository riêng (ví dụ `QuanLySinhVien-Select`) và tải file `.sql`, `README.md` lên, sau đó nộp URL repository trên CodeGym. Không nên dùng lại repository của bài tập khác.

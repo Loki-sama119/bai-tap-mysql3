@@ -1,6 +1,6 @@
-1. Giai nen ZIP.
-2. Mo QuanLySinhVien_Insert.sql trong MySQL Workbench.
-3. Kiem tra da co schema QuanLySinhVien va 4 bang tu bai truoc.
-4. Chay SQL mot lan; chup anh ket qua SELECT thuc te.
-5. Upload file .sql, README.md, anh chup (neu co) len repo GitHub rieng.
-6. Nop LINK REPOSITORY GitHub tren CodeGym.
+1. Giai nen QuanLySinhVien_Select_GitHub.zip.
+2. Mo QuanLySinhVien_Select.sql trong MySQL Workbench, chay 5 truy van.
+3. Kiem tra ket qua Result Grid va chup anh neu can.
+4. Tao repo GitHub PUBLIC: QuanLySinhVien-Select.
+5. Upload cac file .sql, README.md, HUONG_DAN_NOP.txt (khong chi upload ZIP).
+6. Dan URL repo vao CodeGym.
