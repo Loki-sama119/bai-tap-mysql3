@@ -1,50 +1,25 @@
-# Thực hành: Tạo bảng trong CSDL QuanLyDiemThi
+# HealthSync — Khắc phục lỗ hổng CSDL đặt lịch khám bệnh
 
-## Mục tiêu
-Tạo cơ sở dữ liệu `QuanLyDiemThi` gồm **4 bảng** bằng SQL trên MySQL Workbench; thiết lập khóa chính (PK), khóa ngoại (FK) và quan hệ giữa các bảng.
+Bộ thực hành phân tích sự khác biệt giữa Activity Diagram và ERD/MySQL legacy, đề xuất cải tiến có bảo toàn dữ liệu cũ, đồng thời cung cấp hai kịch bản mô phỏng.
 
-## Cấu trúc bảng
-
-| Bảng | Cột | Ràng buộc |
-|---|---|---|
-| `HocSinh` | `MaHS VARCHAR(20)`, `TenHS VARCHAR(50)`, `NgaySinh DATETIME`, `Lop VARCHAR(20)`, `GT VARCHAR(20)` | PK: `MaHS` |
-| `GiaoVien` | `MaGV VARCHAR(20)`, `TenGV VARCHAR(50)`, `SDT VARCHAR(10)` | PK: `MaGV` |
-| `MonHoc` | `MaMH VARCHAR(50)`, `TenMH VARCHAR(50)`, `MaGV VARCHAR(20)` | PK: `MaMH`; FK: `MaGV` → `GiaoVien.MaGV` |
-| `BangDiem` | `MaHS VARCHAR(20)`, `MaMH VARCHAR(50)`, `DiemThi INT`, `NgayKT DATETIME` | PK ghép: (`MaHS`, `MaMH`); FK tới `HocSinh` và `MonHoc` |
-
-> **Lưu ý:** Bảng mô tả yêu cầu quy định `MonHoc.MaMH VARCHAR(50)`; ví dụ ở Bước 4 ghi `VARCHAR(20)` nhưng `BangDiem.MaMH` lại là `VARCHAR(50)`. Bài làm thống nhất **`VARCHAR(50)`** để khóa ngoại có kiểu tương thích và đúng bảng yêu cầu.
-
-## Quan hệ
-
-- `GiaoVien` (1) → (N) `MonHoc`: một giáo viên có thể dạy nhiều môn.
-- `HocSinh` (1) → (N) `BangDiem`: mỗi học sinh có thể có điểm ở nhiều môn.
-- `MonHoc` (1) → (N) `BangDiem`: mỗi môn có thể có điểm của nhiều học sinh.
-- `BangDiem` là bảng liên kết giữa học sinh và môn học; khóa chính ghép `(MaHS, MaMH)` chỉ cho phép một bản ghi trên mỗi cặp học sinh–môn học.
+## Thành phần
+- `healthsync_db.sql`: DDL khởi tạo hoặc nâng cấp legacy database, trigger và DML kiểm thử 2 kịch bản.
+- `consistency_report.md`: Báo cáo ba lỗ hổng chính, phương án xử lý, giới hạn.
+- `ai_prompt_log.md`: Nhật ký phạm vi hỗ trợ AI và câu hỏi cần tự giải thích.
 
 ## Chạy trên MySQL Workbench
+1. Kết nối tới MySQL Server 8.0.16+.
+2. Mở `healthsync_db.sql` và chạy **một lần** trên database `healthsync_db` mới hoặc legacy chưa migrate.
+3. Kiểm tra các kết quả `SELECT` ở cuối file và chụp ảnh bằng MySQL Workbench để làm minh chứng thực tế.
+4. Dự kiến trong kịch bản hủy lịch: `deposit_amount = 300000`, `penalty_fee = 150000`, `refundable_deposit = 150000`, `status = CANCELLED`.
+5. Dự kiến trong kịch bản thành công: `status = COMPLETED` và có một hàng `Prescriptions` liên kết.
 
-1. Mở MySQL Workbench và kết nối `Localhost`.
-2. Mở file `QuanLyDiemThi.sql` (**File → Open SQL Script**), hoặc dán nội dung vào một tab SQL.
-3. Chạy các câu lệnh. CSDL `QuanLyDiemThi` và bốn bảng sẽ được tạo nếu chưa tồn tại.
-4. Nhấn làm mới **SCHEMAS**, mở rộng `QuanLyDiemThi → Tables` để kiểm tra đủ bốn bảng.
-5. Xem kết quả của `SHOW TABLES;` và `SHOW CREATE TABLE` để kiểm tra khóa chính, khóa ngoại.
+**Chú ý:** File không thiết kế để chạy lại nguyên xi lần hai: các cột/trigger đã được tạo ở lần đầu. Đối với hệ thống thật, hãy sao lưu DB trước khi migrate. Dữ liệu lịch cũ bị thiếu thông tin cọc/trạng thái chi tiết, cần đối soát thủ công. Mã chỉ minh họa quy trình; chưa quản lý giao dịch thu cọc, lịch sử chuyển trạng thái hay concurrency toàn diện.
 
-**Lưu ý:** `CREATE TABLE IF NOT EXISTS` không tự sửa cấu trúc bảng đã có sẵn. Nếu các bảng đã tồn tại với cấu trúc sai, cần kiểm tra trước khi thay đổi; tránh xóa dữ liệu.
+## Sơ đồ quan hệ (mô tả)
+- `Patients (1) → (N) Appointments`
+- `Doctors (1) → (N) Appointments`
+- `Appointments (1) → (0..1) Prescriptions`
 
-## Minh chứng thực hiện
-
-Sau khi chạy **trên máy của bạn**, chụp các ảnh thực tế và đặt vào thư mục `images/` với tên:
-
-- `01_danh_sach_bang.png`: `QuanLyDiemThi → Tables` gồm bốn bảng và kết quả `SHOW TABLES;`.
-- `02_khoa_ngoai_MonHoc.png`: kết quả `SHOW CREATE TABLE MonHoc` cho thấy FK `MaGV`.
-- `03_khoa_chinh_ngoai_BangDiem.png`: kết quả `SHOW CREATE TABLE BangDiem` cho thấy PK ghép và hai FK.
-
-Nếu có ảnh, bỏ dấu chú thích ở các dòng sau để hiển thị trực tiếp trên GitHub:
-
-<!-- ![Danh sách 4 bảng](images/01_danh_sach_bang.png) -->
-<!-- ![Khóa ngoại bảng MonHoc](images/02_khoa_ngoai_MonHoc.png) -->
-<!-- ![Khóa chính và khóa ngoại bảng BangDiem](images/03_khoa_chinh_ngoai_BangDiem.png) -->
-
-## Trạng thái
-
-File SQL và tài liệu đã được chuẩn bị; **chưa có xác nhận đã chạy trên MySQL Workbench của người nộp**. Ảnh kết quả phải là ảnh chụp thật sau khi chạy.
+## Nộp bài
+Upload **các file giải nén** lên repository GitHub riêng, không sử dụng repository của bài tập trước. Đọc hiểu nội dung và tự bổ sung ảnh chạy lệnh từ MySQL Workbench nếu giảng viên yêu cầu.
